@@ -1,11 +1,6 @@
 import { PlayerCountProperties } from "../model/game";
+import { getWeight, Weight } from "../model/weight";
 import { Parser } from "./parser";
-
-type RawSuggestedPlayerResult = {
-  best: number;
-  recommended: number;
-  notRecommended: number;
-};
 
 type SuggestedPlayerVoteXml = {
   "@_value": "Best" | "Recommended" | "Not Recommended";
@@ -30,19 +25,24 @@ type StatisticsXml = {
   statistics: { ratings: { averageweight: number } };
 };
 
-export class PlayerCountParser {
+export type RawProperties = {
+  weight: Weight;
+  playCountProperties: PlayerCountProperties;
+};
+
+export class PropertiesParser {
   private static readonly SUGGESTED_PLAYER_POLL_NAME: string =
     "suggested_numplayers";
 
   private static readonly PARSER: Parser = new Parser();
 
-  public parsePlayerCountProperties(data: string): PlayerCountProperties {
-    const stats: StatisticsXml = PlayerCountParser.PARSER.parseAndExtract(
-      data,
-      ["boardgames", "boardgame"],
-    );
+  public parseProperties(data: string): RawProperties {
+    const stats: StatisticsXml = PropertiesParser.PARSER.parseAndExtract(data, [
+      "boardgames",
+      "boardgame",
+    ]);
     const poll: PollXml = stats.poll.find(
-      (poll) => poll["@_name"] === PlayerCountParser.SUGGESTED_PLAYER_POLL_NAME,
+      (poll) => poll["@_name"] === PropertiesParser.SUGGESTED_PLAYER_POLL_NAME,
     );
 
     let minSuggested: number = Infinity;
@@ -88,11 +88,14 @@ export class PlayerCountParser {
     });
 
     return {
-      min: stats.minplayers,
-      max: stats.maxplayers,
-      minSuggested,
-      maxSuggested,
-      best,
+      weight: getWeight(stats.statistics.ratings.averageweight),
+      playCountProperties: {
+        min: stats.minplayers,
+        max: stats.maxplayers,
+        minSuggested,
+        maxSuggested,
+        best,
+      },
     };
   }
 }

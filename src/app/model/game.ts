@@ -1,3 +1,5 @@
+import { Weight } from "./weight";
+
 export type PlayerCountProperties = {
   min: number;
   max: number;
@@ -12,7 +14,7 @@ export type PlaytimeProperties = {
 };
 
 export type GameStats = {
-  weight: number;
+  weight: Weight;
 };
 
 export type GameProperties = {

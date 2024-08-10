@@ -1,15 +1,15 @@
 import environment from "../environment";
-import { Game, PlayerCountProperties } from "./model/game";
+import { Game } from "./model/game";
 import { CollectionParser } from "./parsing/collection-parser";
-import { PlayerCountParser } from "./parsing/statistics-parser";
+import { PropertiesParser, RawProperties } from "./parsing/properties-parser";
 
 export class BggService {
   private static readonly ROOT_URL: string = environment.bggRootUrl;
 
   private static readonly COLLECTION_PARSER: CollectionParser =
     new CollectionParser();
-  private static readonly PLAYER_COUNT_PARSER: PlayerCountParser =
-    new PlayerCountParser();
+  private static readonly PROPERTIES_PARSER: PropertiesParser =
+    new PropertiesParser();
 
   public getUserCollection(username: string): Promise<Game[]> {
     console.log(`Fetching collecction for ${username}`);
@@ -19,9 +19,10 @@ export class BggService {
           return Promise.all(
             BggService.COLLECTION_PARSER.parseCollection(body).map(
               (game: Game) => {
-                return this._getPlayerCountProperties(game.id).then(
-                  (stats: PlayerCountProperties) => {
-                    game.playerCount = stats;
+                return this.getGameProperties(game.id).then(
+                  (props: RawProperties) => {
+                    game.playerCount = props.playCountProperties;
+                    game.stats.weight = props.weight;
                     return game;
                   },
                 );
@@ -33,16 +34,12 @@ export class BggService {
     );
   }
 
-  private _getPlayerCountProperties(
-    id: number,
-  ): Promise<PlayerCountProperties> {
+  public getGameProperties(id: number): Promise<RawProperties> {
     console.log(`Fetching player count properties for game with id ${id}`);
     return fetch(`${BggService.ROOT_URL}/boardgame/${id}?stats=1`).then(
       (res: Response) => {
         return res.text().then((body: string) => {
-          return BggService.PLAYER_COUNT_PARSER.parsePlayerCountProperties(
-            body,
-          );
+          return BggService.PROPERTIES_PARSER.parseProperties(body);
         });
       },
     );

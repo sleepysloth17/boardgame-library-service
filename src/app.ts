@@ -25,8 +25,8 @@ app.get("/collection", (req, res) => {
 });
 
 app.get("/game/:gameId", (req, res) => {
-  (new BggService() as any)
-    ._getPlayerCountProperties(parseInt(req.params.gameId))
+  new BggService()
+    .getGameProperties(parseInt(req.params.gameId))
     .then((val: any) => res.send(val));
 });
 
