@@ -1,4 +1,5 @@
 import express, { Express } from "express";
+import { BggService } from "./app/bgg-service";
 import environment from "./environment";
 
 const port: number = parseInt(environment.serverPort);
@@ -14,9 +15,20 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.get('/', (req, res) => {
-  res.send("Hello Boardgame Library!")
-})
+app.get("/", (req, res) => {
+  res.send("Hello Boardgame Library!");
+});
+
+app.get("/collection", (req, res) => {
+  new BggService().getUserCollection("twerm").then((val: any) => res.send(val));
+  // res.send("Hello Boardgame Library!");
+});
+
+app.get("/game", (req, res) => {
+  (new BggService() as any)
+    ._getGameStatistics(5)
+    .then((val: any) => res.send(val));
+});
 
 app.listen(port, () => {
   console.log(`Boardgame Library Service app listening on port ${port}`);
