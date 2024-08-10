@@ -13,25 +13,25 @@ export class BggService {
 
   public getUserCollection(username: string): Promise<Game[]> {
     console.log(`Fetching collecction for ${username}`);
-    return fetch(`${BggService.ROOT_URL}/collection/${username}?stats=1`).then(
-      (res: Response) => {
-        return res.text().then((body: string) => {
-          return Promise.all(
-            BggService.COLLECTION_PARSER.parseCollection(body).map(
-              (game: Game) => {
-                return this.getGameProperties(game.id).then(
-                  (props: RawProperties) => {
-                    game.playerCount = props.playCountProperties;
-                    game.stats.weight = props.weight;
-                    return game;
-                  },
-                );
-              },
-            ),
-          );
-        });
-      },
-    );
+    return fetch(
+      `${BggService.ROOT_URL}/collection/${username}?stats=1&subtype=boardgame&excludesubtype=boardgameexpansion`,
+    ).then((res: Response) => {
+      return res.text().then((body: string) => {
+        return Promise.all(
+          BggService.COLLECTION_PARSER.parseCollection(body).map(
+            (game: Game) => {
+              return this.getGameProperties(game.id).then(
+                (props: RawProperties) => {
+                  game.stats.playerCount = props.playerCountProperties;
+                  game.stats.weight = props.weight;
+                  return game;
+                },
+              );
+            },
+          ),
+        );
+      });
+    });
   }
 
   public getGameProperties(id: number): Promise<RawProperties> {

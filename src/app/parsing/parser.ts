@@ -13,7 +13,7 @@ export class Parser {
         xml = xml[path[0]];
         path.splice(0, 1);
       } else {
-        throw new Error(`Cannot extract ${path} from object ${xml}`);
+        throw new Error(`Cannot extract ${path} from object ${String(xml)}`);
       }
     }
 

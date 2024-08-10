@@ -32,13 +32,13 @@ export class CollectionParser {
         imageUrl: game.image,
         thumbnailUrl: game.thumbnail,
       },
-      playtime: {
-        min: parseInt(game.stats["@_minplaytime"]),
-        max: parseInt(game.stats["@_maxplaytime"]),
-      },
-      playerCount: null,
       stats: {
+        playtime: {
+          min: parseInt(game.stats["@_minplaytime"]),
+          max: parseInt(game.stats["@_maxplaytime"]),
+        },
         weight: null,
+        playerCount: null,
       },
     }));
   }

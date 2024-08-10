@@ -1,20 +1,21 @@
 import { Weight } from "./weight";
 
-export type PlayerCountProperties = {
+export type NumberRange = {
   min: number;
   max: number;
+};
+
+export type PlayerCountProperties = {
+  range: NumberRange;
   minSuggested: number;
   maxSuggested: number;
   best: number[];
 };
 
-export type PlaytimeProperties = {
-  min: number;
-  max: number;
-};
-
 export type GameStats = {
+  playtime: NumberRange;
   weight: Weight;
+  playerCount: PlayerCountProperties;
 };
 
 export type GameProperties = {
@@ -27,7 +28,5 @@ export type Game = {
   id: number;
   name: string;
   properties: GameProperties;
-  playtime: PlaytimeProperties;
-  playerCount: PlayerCountProperties;
   stats: GameStats;
 };

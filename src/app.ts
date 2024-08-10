@@ -1,5 +1,7 @@
 import express, { Express } from "express";
 import { BggService } from "./app/bgg-service";
+import { Game } from "./app/model/game";
+import { RawProperties } from "./app/parsing/properties-parser";
 import environment from "./environment";
 
 const port: number = parseInt(environment.serverPort);
@@ -20,14 +22,15 @@ app.get("/", (req, res) => {
 });
 
 app.get("/collection", (req, res) => {
-  new BggService().getUserCollection("twerm").then((val: any) => res.send(val));
-  // res.send("Hello Boardgame Library!");
+  new BggService()
+    .getUserCollection("twerm")
+    .then((val: Game[]) => res.send(val));
 });
 
 app.get("/game/:gameId", (req, res) => {
   new BggService()
     .getGameProperties(parseInt(req.params.gameId))
-    .then((val: any) => res.send(val));
+    .then((val: RawProperties) => res.send(val));
 });
 
 app.listen(port, () => {

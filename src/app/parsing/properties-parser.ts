@@ -27,7 +27,7 @@ type StatisticsXml = {
 
 export type RawProperties = {
   weight: Weight;
-  playCountProperties: PlayerCountProperties;
+  playerCountProperties: PlayerCountProperties;
 };
 
 export class PropertiesParser {
@@ -89,9 +89,8 @@ export class PropertiesParser {
 
     return {
       weight: getWeight(stats.statistics.ratings.averageweight),
-      playCountProperties: {
-        min: stats.minplayers,
-        max: stats.maxplayers,
+      playerCountProperties: {
+        range: { min: stats.minplayers, max: stats.maxplayers },
         minSuggested,
         maxSuggested,
         best,
