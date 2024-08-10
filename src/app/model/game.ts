@@ -3,7 +3,7 @@ export type PlayerCountProperties = {
   max: number;
   minSuggested: number;
   maxSuggested: number;
-  best: number;
+  best: number[];
 };
 
 export type PlaytimeProperties = {

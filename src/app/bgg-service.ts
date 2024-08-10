@@ -1,12 +1,15 @@
 import environment from "../environment";
-import { Game } from "./model/game";
-import { RawStatistics, XmlParserService } from "./xml-parser-service";
+import { Game, PlayerCountProperties } from "./model/game";
+import { CollectionParser } from "./parsing/collection-parser";
+import { PlayerCountParser } from "./parsing/statistics-parser";
 
 export class BggService {
   private static readonly ROOT_URL: string = environment.bggRootUrl;
 
-  private static readonly parserService: XmlParserService =
-    new XmlParserService(); // TODO
+  private static readonly COLLECTION_PARSER: CollectionParser =
+    new CollectionParser();
+  private static readonly PLAYER_COUNT_PARSER: PlayerCountParser =
+    new PlayerCountParser();
 
   public getUserCollection(username: string): Promise<Game[]> {
     console.log(`Fetching collecction for ${username}`);
@@ -14,30 +17,32 @@ export class BggService {
       (res: Response) => {
         return res.text().then((body: string) => {
           return Promise.all(
-            BggService.parserService.parseCollection(body).map((game: Game) => {
-              return this._getGameStatistics(game.id).then(
-                (stats: RawStatistics) => {
-                  console.log(stats);
-                  game.playerCount.minSuggested;
-                  game.playerCount.maxSuggested;
-                  game.playerCount.best;
-                  game.stats.weight = stats.weight;
-                  return game;
-                },
-              );
-            }),
+            BggService.COLLECTION_PARSER.parseCollection(body).map(
+              (game: Game) => {
+                return this._getPlayerCountProperties(game.id).then(
+                  (stats: PlayerCountProperties) => {
+                    game.playerCount = stats;
+                    return game;
+                  },
+                );
+              },
+            ),
           );
         });
       },
     );
   }
 
-  private _getGameStatistics(id: number): Promise<RawStatistics> {
-    console.log(`Fetchin game statistics for game with id ${id}`);
+  private _getPlayerCountProperties(
+    id: number,
+  ): Promise<PlayerCountProperties> {
+    console.log(`Fetching player count properties for game with id ${id}`);
     return fetch(`${BggService.ROOT_URL}/boardgame/${id}?stats=1`).then(
       (res: Response) => {
         return res.text().then((body: string) => {
-          return BggService.parserService.parseGameStatistics(body);
+          return BggService.PLAYER_COUNT_PARSER.parsePlayerCountProperties(
+            body,
+          );
         });
       },
     );

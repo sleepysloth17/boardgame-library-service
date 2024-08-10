@@ -24,9 +24,9 @@ app.get("/collection", (req, res) => {
   // res.send("Hello Boardgame Library!");
 });
 
-app.get("/game", (req, res) => {
+app.get("/game/:gameId", (req, res) => {
   (new BggService() as any)
-    ._getGameStatistics(5)
+    ._getPlayerCountProperties(parseInt(req.params.gameId))
     .then((val: any) => res.send(val));
 });
 
