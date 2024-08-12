@@ -7,8 +7,7 @@ export type NumberRange = {
 
 export type PlayerCountProperties = {
   range: NumberRange;
-  minSuggested: number;
-  maxSuggested: number;
+  suggested: number[];
   best: number[];
 };
 

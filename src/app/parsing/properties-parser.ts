@@ -45,8 +45,7 @@ export class PropertiesParser {
       (poll) => poll["@_name"] === PropertiesParser.SUGGESTED_PLAYER_POLL_NAME,
     );
 
-    let minSuggested: number = Infinity;
-    let maxSuggested: number = -Infinity;
+    const suggested: number[] = [];
     const best: number[] = [];
 
     poll.results.forEach((result: SuggestedPlayerXml) => {
@@ -73,13 +72,7 @@ export class PropertiesParser {
       currentNotRecommended = currentNotRecommended / total;
 
       if (currentNotRecommended <= 0.5) {
-        if (numberOfPlayers < minSuggested) {
-          minSuggested = numberOfPlayers;
-        }
-
-        if (numberOfPlayers > maxSuggested) {
-          maxSuggested = numberOfPlayers;
-        }
+        suggested.push(numberOfPlayers);
 
         if (currentBest >= 0.5) {
           best.push(numberOfPlayers);
@@ -91,8 +84,7 @@ export class PropertiesParser {
       weight: getWeight(stats.statistics.ratings.averageweight),
       playerCountProperties: {
         range: { min: stats.minplayers, max: stats.maxplayers },
-        minSuggested,
-        maxSuggested,
+        suggested,
         best,
       },
     };

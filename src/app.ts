@@ -7,6 +7,8 @@ import environment from "./environment";
 const port: number = parseInt(environment.serverPort);
 const app: Express = express();
 
+let cache: Game[] = []; // TODO
+
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "GET, POST");
@@ -22,9 +24,15 @@ app.get("/", (req, res) => {
 });
 
 app.get("/collection", (req, res) => {
-  new BggService()
-    .getUserCollection("twerm")
-    .then((val: Game[]) => res.send(val));
+  if (cache.length) {
+    console.log("Responding with cache");
+    res.send(cache);
+  } else {
+    new BggService().getUserCollection("twerm").then((val: Game[]) => {
+      cache = val;
+      res.send(cache);
+    });
+  }
 });
 
 app.get("/game/:gameId", (req, res) => {
