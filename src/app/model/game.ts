@@ -19,8 +19,10 @@ export type GameStats = {
 
 export type GameProperties = {
   type: string;
+  yearPublished: number;
   imageUrl: string;
   thumbnailUrl: string;
+  description: string;
 };
 
 export type Game = {

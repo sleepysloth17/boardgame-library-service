@@ -22,6 +22,7 @@ export class BggService {
             (game: Game) => {
               return this.getGameProperties(game.id).then(
                 (props: RawProperties) => {
+                  game.properties.description = props.description;
                   game.stats.playerCount = props.playerCountProperties;
                   game.stats.weight = props.weight;
                   return game;

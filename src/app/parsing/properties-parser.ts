@@ -19,6 +19,7 @@ type PollXml = {
 };
 
 type StatisticsXml = {
+  description: string;
   minplayers: number;
   maxplayers: number;
   poll: PollXml[];
@@ -26,6 +27,7 @@ type StatisticsXml = {
 };
 
 export type RawProperties = {
+  description: string;
   weight: Weight;
   playerCountProperties: PlayerCountProperties;
 };
@@ -81,6 +83,7 @@ export class PropertiesParser {
     });
 
     return {
+      description: stats.description,
       weight: getWeight(stats.statistics.ratings.averageweight),
       playerCountProperties: {
         range: { min: stats.minplayers, max: stats.maxplayers },

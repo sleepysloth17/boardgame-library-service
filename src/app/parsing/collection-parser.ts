@@ -7,6 +7,7 @@ type GameXml = {
   "@_subtype": string;
   image: string;
   thumbnail: string;
+  yearpublished: number;
   stats: {
     "@_minplaytime": string;
     "@_maxplaytime": string;
@@ -31,6 +32,8 @@ export class CollectionParser {
         type: game["@_subtype"],
         imageUrl: game.image,
         thumbnailUrl: game.thumbnail,
+        yearPublished: game.yearpublished,
+        description: null,
       },
       stats: {
         playtime: {

@@ -1,5 +1,10 @@
 # Boardgame Library Service
 
+## TODO
+
+- cache requests and collection
+- cache images probably as well tbh
+
 ## What it should handle
 
 - Injest the boardgame collection from bgg via the [api](https://boardgamegeek.com/wiki/page/BGG_XML_API2)
